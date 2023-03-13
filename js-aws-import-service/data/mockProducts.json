@@ -1,0 +1,37 @@
+[
+  {
+    "id": "00001",
+    "title": "Teddy Bear",
+    "description": "A fun toy for kids of age 3-7",
+    "price": 20,
+    "count": 4
+  },
+  {
+    "id": "00002",
+    "title": "Remote Control Car",
+    "description": "A toy car controlled by remote",
+    "price": 35,
+    "count": 10
+  },
+  {
+    "id": "00003",
+    "title": "Transformer",
+    "description": "A transformer convertible to a car and a robot",
+    "price": 45,
+    "count": 10
+  },
+  {
+    "id": "00004",
+    "title": "Kitchen Set",
+    "description": "A kitchen set including 6 pieces",
+    "price": 15,
+    "count": 20
+  },
+  {
+    "id": "00005",
+    "title": "Medical Set",
+    "description": "A Medical set for kids of age 3+",
+    "price": 15,
+    "count": 25
+  }
+]
