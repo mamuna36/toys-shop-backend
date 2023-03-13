@@ -1,0 +1,24 @@
+{
+  "name": "js-aws-product-service",
+  "version": "1.0.0",
+  "description": "CloudX: AWS Practitioner for JS #4 Course - Backend Repository",
+  "main": "createProduct.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mamuna36/js-aws-product-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mamuna36/js-aws-product-service/issues"
+  },
+  "homepage": "https://github.com/mamuna36/js-aws-product-service#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1328.0",
+    "csv-parser": "^3.0.0",
+    "uuid": "^9.0.0"
+  }
+}
