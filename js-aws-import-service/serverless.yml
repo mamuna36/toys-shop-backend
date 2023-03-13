@@ -28,14 +28,13 @@ provider:
       statements:
         - Effect: 'Allow'
           Action:
-            - 's3:GetObject'
-            - 's3:PutObject'
+            - 's3:*'
           Resource:
+            - 'arn:aws:s3:::toys-shop-product-files'
             - 'arn:aws:s3:::toys-shop-product-files/*'
 
   # you can overwrite defaults here
   stage: dev
-  profile: mamunaanwar
   region: us-east-1
 
 # you can add packaging information here
@@ -47,26 +46,21 @@ provider:
 #    - include-me-dir/**
 functions:
   importProductFile:
-    handler: src/functions/Products/importProductFile/handler.importProductFile
+    handler: src/functions/Products/importProductCSV/handler.importProductCSV
     events:
       - http:
           path: import
           method: get
           cors: true
-  createProduct:
-    handler: src/functions/Products/createProduct/handler.createProduct
+  uploadCSVFile:
+    handler: src/functions/Products/parseCSVFile/handler.parseCSVFile
     events:
-      - http:
-          path: products
-          method: post
-          cors: true
-  getProductById:
-    handler: src/functions/Products/getProductById/handler.getProductById
-    events:
-      - http:
-          path: products/{id}
-          method: get
-          cors: true
+      - s3:
+          bucket: toys-shop-product-files
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -109,31 +103,3 @@ functions:
 
 # you can add CloudFormation resource templates here
 #resources:
-resources:
-  Resources:
-    Products:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:service}-products-${sls:stage}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
-    Stocks:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:service}-stocks-${sls:stage}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
