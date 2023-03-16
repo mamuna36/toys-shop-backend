@@ -1,25 +1,37 @@
 'use strict'
 const AWS = require('aws-sdk')
 const csv = require('csv-parser')
-module.exports.parseCSVFile = async () => {
+const BUCKET = 'toys-shop-product-files'
+module.exports.parseCSVFile = async (event) => {
   const s3 = new AWS.S3({ region: 'us-east-1' })
-  const results = []
-  const params = {
-    Bucket: BUCKET,
-    Prefix: 'uploaded/',
-    Delimiter: '/'
-  }
-  const s3Stream = s3.getObject(params).createReadStream()
+  event.Records.forEach((record) => {
+    const s3Stream = s3
+      .getObject({
+        Bucket: BUCKET,
+        Key: record.s3.object.key
+      })
+      .createReadStream()
 
-  s3Stream
-    .pipe(csv())
-    .on('data', (data) => {
-      results.push(data)
-    })
-    .on('error', (error) => {
-      console.error(error)
-    })
-    .on('end', () => {
-      console.log(results)
-    })
+    s3Stream
+      .pipe(csv())
+      .on('data', (data) => {
+        console.log(data)
+      })
+      .on('end', async () => {
+        console.log(`Copy from ${BUCKET}/${record.s3.object.key}`)
+        await s3
+          .copyObject({
+            Bucket: BUCKET,
+            CopySource: `${BUCKET}/${record.s3.object.key}`,
+            Key: record.s3.object.key.replace('uploaded', 'parsed')
+          })
+          .promise()
+        console.log(
+          `Copied into ${BUCKET}/${record.s3.object.key.replace(
+            'uploaded',
+            'parsed'
+          )}`
+        )
+      })
+  })
 }
