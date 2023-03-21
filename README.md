@@ -35,7 +35,7 @@ CloudX: AWS Practitioner for JS #4 Course - Backend Repository
 - [x] Create a lambda function called importFileParser under the same serverless.yml file which will be triggered by an S3 event.
 - [x] The event should be s3:ObjectCreated:*
 - [x] Configure the event to be fired only by changes in the uploaded folder in S3.
-- [x] The lambda function should use a readable stream to get an object from S3, parse it using csv-parser package and log each record to be shown in CloudWatch.
+- [x] The lambda function should use a readable stream to get an object from S3, parse it using csv-parser package and log each record to be shown in CloudWatch(screenshot is provided).
 
 ### **Task 5. 3**
 
