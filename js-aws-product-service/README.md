@@ -20,13 +20,15 @@ CloudX: AWS Practitioner for JS #4 Course - Backend Repository
 
   - [x] Create a Lambda function called `getProductsById`
   - [x] Requested URL should be `/products/{productId}`
-  - [x] Response should be one product from an array of products
+  - [] Response should be one product from an array of products
 
   endpoints:
 
   - GET - https://aw6v1rl990.execute-api.us-east-1.amazonaws.com/dev/products
   - POST - https://aw6v1rl990.execute-api.us-east-1.amazonaws.com/dev/products
   - GET - https://aw6v1rl990.execute-api.us-east-1.amazonaws.com/dev/products/{id}
+  - POST - https://aw6v1rl990.execute-api.us-east-1.amazonaws.com/dev/stocks
+  - GET - https://aw6v1rl990.execute-api.us-east-1.amazonaws.com/dev/stocks/{id}
 
 ### **Task 3. 3**
 

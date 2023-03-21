@@ -2,6 +2,7 @@ service: import-service
 frameworkVersion: '3'
 plugins:
   - serverless-offline
+  - serverless-esbuild
 provider:
   name: aws
   runtime: nodejs12.x
@@ -14,10 +15,20 @@ provider:
           Resource:
             - 'arn:aws:s3:::toys-shop-product-files'
             - 'arn:aws:s3:::toys-shop-product-files/*'
+        - Effect: 'Allow'
+          Action:
+             - 'sqs:*'
+          Resource: 'Fn::GetAtt' : ['CatalogItemsQueue', 'Arn']
+        - Effect: 'Allow'
+          Action:
+             - 'sns:*'
+          Resource: Ref: 'CreateProductTopic'
 
 
   stage: dev
   region: us-east-1
+  environment: 
+  
 
 functions:
   importProductFile:

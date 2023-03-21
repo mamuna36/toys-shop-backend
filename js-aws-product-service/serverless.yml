@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: import-service
+service: product-service
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -21,21 +21,27 @@ service: import-service
 frameworkVersion: '3'
 
 provider:
-  name: aws
-  runtime: nodejs12.x
   iam:
     role:
       statements:
         - Effect: 'Allow'
           Action:
-            - 's3:GetObject'
-            - 's3:PutObject'
+            - 'dynamodb:PutItem'
+            - 'dynamodb:Get*'
+            - 'dynamodb:Scan*'
+            - 'dynamodb:UpdateItem'
+            - 'dynamodb:DeleteItem'
           Resource:
-            - 'arn:aws:s3:::toys-shop-product-files/*'
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-products-${sls:stage}
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-stocks-${sls:stage}
+  name: aws
+  runtime: nodejs12.x
+  environment:
+    DYNAMODB_PRODUCTS_TABLE: ${self:service}-products-${sls:stage}
+    DYNAMODB_STOCKS_TABLE: ${self:service}-stocks-${sls:stage}
 
   # you can overwrite defaults here
   stage: dev
-  profile: mamunaanwar
   region: us-east-1
 
 # you can add packaging information here
@@ -46,11 +52,11 @@ provider:
 #    - include-me.js
 #    - include-me-dir/**
 functions:
-  importProductFile:
-    handler: src/functions/Products/importProductFile/handler.importProductFile
+  getProductsList:
+    handler: src/functions/Products/getProductsList/handler.getProducts
     events:
       - http:
-          path: import
+          path: products
           method: get
           cors: true
   createProduct:
