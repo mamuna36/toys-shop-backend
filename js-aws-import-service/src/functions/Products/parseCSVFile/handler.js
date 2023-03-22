@@ -1,12 +1,12 @@
-const  { S3 } = require('aws-sdk')
+const  { S3, SQS } = require('aws-sdk')
 const csv = require('csv-parser') 
 
 const s3 = new S3({ region: 'us-east-1' })
+sqs = new SQS()
 
 const Bucket = 'toys-shop-product-files'
 
 module.exports.importFileParser = async (event) => {
-  console.log('importFileParser event: ', event)
   try {
     for (const record of event.Records) {
         const parsedFilePath = record.s3.object.key.replace(
@@ -22,13 +22,41 @@ module.exports.importFileParser = async (event) => {
             })
             .createReadStream()
 
+          const headers = ['id', 'title', 'description', 'price', 'count']
           s3Stream
-            .pipe(csv())
-            .on('data', (data) => {
-              console.log(data)
+            .pipe(csv({ separator: ';', headers: headers, skipLines: 1 }))
+            .on('data', async (data) => {
+              const { title, description, price, count } = data
+              if (
+                !title ||
+                !description ||
+                (!price && price !== 0) ||
+                (!count && count !== 0)
+              ) {
+                console.log(
+                  `Failed to process item - item is invalid: ${JSON.stringify(
+                    data
+                  )}`
+                )
+                return
+              }
+
+              try {
+                await this.sqs
+                  .sendMessage({
+                    QueueUrl: process.env.PROCESS_PRODUCT_SQS_URL,
+                    MessageBody: JSON.stringify(data)
+                  })
+                  .promise()
+
+                console.log(`Processed item: ${JSON.stringify(data)}`)
+              } catch (e) {
+                console.log('Failed to process item: failed to send sqs')
+                console.error(e)
+              }
             })
             .on('end', async () => {
-              console.log(`Move from ${Bucket}/${record.s3.object.key}`)
+              console.log(`Move from ${BUCKET_NAME}/${record.s3.object.key}`)
 
               try {
                 await s3
@@ -57,6 +85,6 @@ module.exports.importFileParser = async (event) => {
       
     }
   } catch (err) {
-    console.error('Error (importFileParser): ', err)
+    console.error('Error (file processing failed): ', err)
   }
 }

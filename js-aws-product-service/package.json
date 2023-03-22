@@ -18,6 +18,10 @@
   "homepage": "https://github.com/mamuna36/js-aws-product-service#readme",
   "dependencies": {
     "aws-sdk": "^2.1328.0",
+    "serverless-offline": "^12.0.4",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3"
   }
 }
