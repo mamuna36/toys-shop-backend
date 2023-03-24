@@ -110,11 +110,5 @@ resources:
         Endpoint: ${env:CREATE_PRODUCT_SUBSCRIPTION_EMAIL}
         Protocol: email
         TopicArn: !Ref 'CreateProductTopic'
-    CreateProductHighPriceTopicSubscription:
-      Type: AWS::SNS::Subscription
-      Properties: 
-        Endpoint: ${env:CREATE_PRODUCT_HIGH_PRICE_SUBSCRIPTION_EMAIL}
-        Protocol: email
-        TopicArn: !Ref 'CreateProductTopic'
         FilterPolicy: 
           price: [{ numeric: ['>=', 1000] }]
