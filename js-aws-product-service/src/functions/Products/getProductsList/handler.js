@@ -2,7 +2,6 @@
 const AWS = require('aws-sdk')
 
 module.exports.getProducts = async (event) => {
-  const S3 = new AWS.S3({ region: 'us-east-1' })
   const ProductScanParams = {
     TableName: process.env.DYNAMODB_PRODUCTS_TABLE
   }
