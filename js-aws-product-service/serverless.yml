@@ -59,7 +59,7 @@ functions:
           method: get
           cors: true
   catalogBatchProcess:
-    handler: src/functions/Products/catalogBatchProcess.handler.catalogBatchProcess
+    handler: src/functions/Products/catalogBatchProcess/handler.catalogBatchProcess
     events:
       - sqs:
           batchSize: 5
