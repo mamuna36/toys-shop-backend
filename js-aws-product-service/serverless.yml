@@ -16,7 +16,10 @@ provider:
             - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-stocks-${sls:stage}
         - Effect: 'Allow'
           Action: 'sqs:*'
-          Resource: { 'Fn::GetAtt': ['CatalogItemsQueue', 'Arn'] }
+          Resource:
+            Fn::GetAtt:
+              - CatalogItemsQueue
+              - Arn
         - Effect: 'Allow'
           Action: 'sns:*'
           Resource: !Ref 'CreateProductTopic'
@@ -57,18 +60,32 @@ functions:
           cors: true
   catalogBatchProcess:
     handler: src/functions/Products/catalogBatchProcess.handler.catalogBatchProcess
-    events: [
-    {
-      sqs: {
-        batchSize: 5,
-        arn: {
-          'Fn::GetAtt': ['CatalogItemsQueue', 'Arn']
-        },
-      }
-    }
-  ]
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - CatalogItemsQueue
+              - Arn
+  
 
 resources:
+  Outputs: 
+    CatalogItemsQueueArn:
+      Value:
+        Fn::GetAtt:
+              - CatalogItemsQueue
+              - Arn
+      Description: 'SQS will be used by other stacks'
+      Export: 
+        Name: '${self:service}-${self:provider.stage}-CatalogItemsQueueArn'
+        
+      
+    CatalogItemsQueueUrl: 
+        Value: !Ref 'CatalogItemsQueue'
+        Description: 'SQS will be used by other stacks'
+        Export: 
+          Name: '${self:service}-${self:provider.stage}-CatalogItemsQueueUrl'    
   Resources:
     Products:
       Type: AWS::DynamoDB::Table
@@ -110,5 +127,5 @@ resources:
         Endpoint: ${env:CREATE_PRODUCT_SUBSCRIPTION_EMAIL}
         Protocol: email
         TopicArn: !Ref 'CreateProductTopic'
-        FilterPolicy: 
-          price: [{ numeric: ['>=', 1000] }]
+        # FilterPolicy: 
+        #   price: [{ numeric: ['<=', 1000] }]

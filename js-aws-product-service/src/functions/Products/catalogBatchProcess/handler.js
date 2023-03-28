@@ -18,12 +18,7 @@ module.exports.catalogBatchProcess = async (event) => {
         })
         continue
       }
-      const createdProduct = await createProduct({
-        title,
-        description,
-        price,
-        count
-      })
+      const createdProduct = await createProduct(event)
 
       console.log('Product is successfully created', createdProduct)
     } catch (e) {
