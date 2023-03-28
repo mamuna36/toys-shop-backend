@@ -44,13 +44,6 @@ functions:
           path: products
           method: get
           cors: true
-  createProduct:
-    handler: src/functions/Products/createProduct/handler.createProduct
-    events:
-      - http:
-          path: products
-          method: post
-          cors: true
   getProductById:
     handler: src/functions/Products/getProductById/handler.getProductById
     events:

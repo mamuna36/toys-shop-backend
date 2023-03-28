@@ -14,10 +14,16 @@ provider:
           Resource:
             - 'arn:aws:s3:::toys-shop-product-files'
             - 'arn:aws:s3:::toys-shop-product-files/*'
-
-
+        - Effect: 'Allow'
+          Action:
+            - 'sqs:*'
+          Resource: 
+            Fn::ImportValue: 'product-service-dev-CatalogItemsQueueArn'
   stage: dev
   region: us-east-1
+  environment:
+    PROCESS_PRODUCT_SQS_URL:
+      Fn::ImportValue: 'product-service-dev-CatalogItemsQueueUrl'
   
 
 functions:
@@ -27,11 +33,17 @@ functions:
       - http:
           path: import
           method: get
-          cors: true
+          cors: true 
           request:
             parameters:
               querystrings:
                 name: true
+          # authorizer:
+          #   name: basicAuthorizer
+          #   arn: arn:aws:lambda:${aws:region}:${aws:accountId}:function:js-aws-authorization-service-dev-basicAuthorizer
+          #   resultTtlInSeconds: 0
+          #   type: token
+          #   identitySource: method.request.header.Authorization
   importFileParser:
     handler: src/functions/Products/parseCSVFile/handler.importFileParser
     events:

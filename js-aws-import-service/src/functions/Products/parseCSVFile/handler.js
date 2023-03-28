@@ -39,7 +39,6 @@ module.exports.importFileParser = async (event) => {
               )
               return
             }
-
             try {
               await sqs
                 .sendMessage({

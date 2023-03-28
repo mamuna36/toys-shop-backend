@@ -1,9 +1,9 @@
-const createProduct = require('../createProduct/handler')
+const {createS3Product} = require('../createProduct/handler')
 module.exports.catalogBatchProcess = async (event) => {
-
+console.log('event', event)
   for (const record of event.Records) {
     try {
-      const { title, description, price, count } = JSON.parse(record.body)
+      const { id, title, description, price, count } = JSON.parse(record.body)
       if (
         !title ||
         !description ||
@@ -18,7 +18,13 @@ module.exports.catalogBatchProcess = async (event) => {
         })
         continue
       }
-      const createdProduct = await createProduct(event)
+      const createdProduct = await createS3Product({
+        id,
+        title,
+        description,
+        price,
+        count
+      })
 
       console.log('Product is successfully created', createdProduct)
     } catch (e) {
