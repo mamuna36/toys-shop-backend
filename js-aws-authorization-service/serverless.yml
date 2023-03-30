@@ -1,0 +1,17 @@
+service: js-aws-authorization-service
+
+frameworkVersion: '3'
+plugins:
+  - serverless-offline
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+
+functions:
+  basicAuthorizer:
+    handler: src/functions/authorization/handler.basicAuthorizer
+
